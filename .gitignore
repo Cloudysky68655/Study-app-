@@ -1,0 +1,7 @@
+node_modules
+.next
+.env.local
+.DS_Store
+tests/e2e/node_modules
+tests/e2e/screenshots
+tests/e2e/results.json

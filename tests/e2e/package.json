@@ -1,0 +1,10 @@
+{
+  "name": "cardio-tracker-e2e",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@supabase/supabase-js": "latest",
+    "playwright": "latest",
+    "ws": "^8.18.0"
+  }
+}

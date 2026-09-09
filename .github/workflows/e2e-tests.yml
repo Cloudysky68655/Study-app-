@@ -1,0 +1,44 @@
+name: E2E Tests
+
+# Manual trigger only — go to the "Actions" tab on GitHub, pick "E2E
+# Tests" in the left sidebar, click "Run workflow". Nothing runs
+# automatically on push, by design.
+on:
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install test dependencies
+        working-directory: tests/e2e
+        run: npm install
+
+      - name: Install Playwright's browser
+        working-directory: tests/e2e
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        working-directory: tests/e2e
+        env:
+          SITE_URL: https://getstudying.vercel.app
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node run.mjs
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results
+          path: |
+            tests/e2e/results.json
+            tests/e2e/screenshots/**
+          if-no-files-found: ignore
