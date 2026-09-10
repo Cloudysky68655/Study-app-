@@ -2226,33 +2226,83 @@ function Heatmap({ settings, topics, progress }) {
     return label;
   });
 
+  const dayOfWeekLabels = ["S", "M", "T", "W", "T", "F", "S"];
+
   return (
     <div>
-      <div style={{ overflowX: "auto", paddingBottom: 4 }}>
-        <div style={{ display: "grid", gridTemplateColumns: `repeat(${weeks}, minmax(20px, 1fr))`, gap: 7, marginBottom: 8, fontSize: 10, color: "var(--soft)", fontFamily: "monospace" }}>
-          {monthLabels.map((l, i) => <div key={i}>{l}</div>)}
-        </div>
-        <div style={{ display: "grid", gridTemplateRows: "repeat(7, minmax(20px, 1fr))", gridAutoFlow: "column", gridAutoColumns: `minmax(20px, 1fr)`, gap: 7, minHeight: 190 }}>
-          {columns.flatMap((col, ci) => col.map((c, ri) => (
-            c.inRange
-              ? (
-                <div
-                  key={`${ci}-${ri}`}
-                  className={`hm-cell-grid hm${c.level}`}
-                  title={`${c.date.toLocaleDateString("en-US")} · ${c.count} logged action${c.count === 1 ? "" : "s"}`}
-                  style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-                >
-                  <span style={{ fontSize: 9.5, fontWeight: 700, color: "#fff", mixBlendMode: "difference", pointerEvents: "none" }}>{c.date.getDate()}</span>
+      <div style={{ overflowX: "auto", paddingBottom: 6 }}>
+        <div style={{ display: "inline-flex", flexDirection: "column" }}>
+          {/* Month labels row */}
+          <div style={{ display: "flex", gap: 3.5, marginBottom: 4, paddingLeft: 18, fontSize: 9.5, color: "var(--soft)", fontFamily: "monospace" }}>
+            {columns.map((col, i) => (
+              <div key={i} style={{ width: 15, flexShrink: 0, textAlign: "center", whiteSpace: "nowrap", overflow: "visible" }}>
+                {monthLabels[i]}
+              </div>
+            ))}
+          </div>
+
+          {/* Grid with Day of Week labels + Week Columns */}
+          <div style={{ display: "flex", gap: 3.5, alignItems: "stretch" }}>
+            {/* Day of Week abbreviation column */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 3.5, width: 14, flexShrink: 0, justifyContent: "space-between", fontSize: 8.5, color: "var(--soft)", fontWeight: 600 }}>
+              {dayOfWeekLabels.map((lbl, di) => (
+                <div key={di} style={{ height: 15, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <span>{lbl}</span>
                 </div>
-              )
-              : <div key={`${ci}-${ri}`} />
-          )))}
+              ))}
+            </div>
+
+            {/* Week columns of square cells */}
+            <div style={{ display: "flex", gap: 3.5 }}>
+              {columns.map((col, ci) => (
+                <div key={ci} style={{ display: "flex", flexDirection: "column", gap: 3.5, width: 15, flexShrink: 0 }}>
+                  {col.map((c, ri) => (
+                    c.inRange ? (
+                      <div
+                        key={`${ci}-${ri}`}
+                        className={`hm-cell-grid hm${c.level}`}
+                        title={`${c.date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" })} · ${c.count} logged action${c.count === 1 ? "" : "s"}`}
+                        style={{
+                          width: 15,
+                          height: 15,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        key={`${ci}-${ri}`}
+                        style={{
+                          width: 15,
+                          height: 15,
+                          opacity: 0.08,
+                          borderRadius: 3.5,
+                          border: "1px dashed var(--panel-border)",
+                          flexShrink: 0,
+                        }}
+                      />
+                    )
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 10, fontSize: 10, color: "var(--soft)" }}>
-        <span>Less</span>
-        <div className="hm-cell hm0" /><div className="hm-cell hm1" /><div className="hm-cell hm2" /><div className="hm-cell hm3" /><div className="hm-cell hm4" />
-        <span>More</span>
+
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8, marginTop: 10, fontSize: 10.5, color: "var(--soft)" }}>
+        <span style={{ fontWeight: 600 }}>Daily study intensity</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 4.5 }}>
+          <span>Less</span>
+          <div className="hm-cell hm0" />
+          <div className="hm-cell hm1" />
+          <div className="hm-cell hm2" />
+          <div className="hm-cell hm3" />
+          <div className="hm-cell hm4" />
+          <span>More</span>
+        </div>
       </div>
     </div>
   );

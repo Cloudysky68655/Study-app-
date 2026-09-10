@@ -183,6 +183,7 @@ function PracticeTab({ supabase, user, showToast, activeUnitId, onProgressChange
         setPaused(true);
       }
     } catch (e) { /* corrupt/unavailable storage — just skip restoring */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Persist whenever anything meaningful changes, so a route change

@@ -1,65 +1,48 @@
-# Cardio-Respiratory Tracker (Next.js + Supabase)
+# Cardio-Respiratory Medical Study Suite (Next.js + Supabase)
 
-This replaces your single-file HTML tracker with a real multi-page, multi-device app:
-login/signup, a Postgres database (via Supabase) instead of `localStorage`, and your
-four themes ported as CSS variables.
+An all-in-one medical curriculum tracking and study suite built for medical students. Powered by **Next.js (App Router)** and **Supabase (PostgreSQL + Auth)**.
 
-## 1. Set up the database
+## Core Features
 
-1. Go to your Supabase project → **SQL Editor** → **New query**.
-2. Open `supabase/schema.sql` in this folder, paste its entire contents in, and click **Run**.
-   This creates the tables (`modules`, `tasks`, `logs`, `user_settings`) and locks each
-   row to its owner (Row Level Security), so users can only ever see their own data.
+- **Curriculum Tracker**: Multi-unit tracking with multi-pass progress (1st pass, 2nd pass, review, mastered), confidence ratings, study timer with session logging, standalone pass-logging modal, and real-time mastery calculation.
+- **Library (QBank & Flashcards)**:
+  - **Question Bank**: Multiple choice, active recall, and timed exams with confidence calibration, attempt tracking, and weak-point review.
+  - **Spaced Repetition Flashcards**: Basic and Cloze drilling with escalating re-show intervals.
+  - **Admin Importers**: Direct JSON question bank and flashcard card importers for the administrator.
+- **Visual Analytics & Insights**: Topic mastery donuts, revision velocity, topic breakdown, and comprehensive study session history logs formatted with human-readable hours and minutes (`1h 30m`).
+- **Study Planner & Calendar**: Spaced review recommendations, weekly schedule, exam countdowns, and daily topic limits.
+- **Dedicated Settings Page (`/settings`)**:
+  - Appearance (Light Mode / Night Mode toggle)
+  - Audio & Sound (synthesized UI sound effects master toggle + test sound button)
+  - Curriculum & Goals (active subject switcher, target review passes goal stepper + presets)
+  - Data Backups (full JSON data export, active unit progress reset)
+  - Account and session details with one-click sign out
+- **Admin Access Management (`/access`)**: Redeem-code generation, batch labeling, status tracking, and revocation.
+- **Silent Moon Companion (`/sm/*`)**: Ambient wellness, meditation, and audio sleep/study routines.
 
-## 2. Install and run locally
+## Running Locally
 
-Open a terminal in this folder and run:
-
+1. Install dependencies:
 ```bash
 npm install
+```
+
+2. Configure environment variables in `.env.local`:
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+3. Run the development server:
+```bash
 npm run dev
 ```
 
-Then open http://localhost:3000 — it'll redirect you to `/login`. Click "Sign up",
-create an account (Supabase will email a confirmation link — check your inbox), confirm,
-then log in.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-Your Supabase URL and public key are already filled in in `.env.local`.
-
-## 3. Push to GitHub
+## Build & Verification
 
 ```bash
-git init
-git add .
-git commit -m "Initial Next.js + Supabase tracker"
-git branch -M main
-git remote add origin <your-new-github-repo-url>
-git push -u origin main
+npm run lint
+npm run build
 ```
-
-(`.env.local` is gitignored on purpose — it won't be pushed.)
-
-## 4. Deploy on Vercel
-
-1. Go to vercel.com → **Add New Project** → import this GitHub repo.
-2. In the import screen, expand **Environment Variables** and add:
-   - `NEXT_PUBLIC_SUPABASE_URL` = `https://acxkuejfngplexowytzg.supabase.co`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = your anon/publishable key
-3. Click **Deploy**. Every future `git push` auto-redeploys.
-
-## What's included right now
-
-- Email/password auth (Supabase Auth)
-- Modules (subjects) and tasks, stored per-user in Postgres
-- Status cycling per task: new → learning → review → mastered
-- Overall mastery progress bar
-- Your 4 themes (dark/solar/bloom/stitch) as a switcher, saved per-user in the database
-
-## What's not ported yet (from your original file)
-
-Your original tracker had a lot more: the auto-schedule generator, pass-count/mastery
-scoring rules, the daily log view, deadline countdown, data export, and the background
-click-effects (flower bursts, sparks, etc.). The architecture now supports all of it —
-it's just a matter of porting each piece from your old `<script>` logic into a React
-component that reads/writes Supabase instead of the local `state` object. Happy to do
-these next, one at a time, once this base is running for you.

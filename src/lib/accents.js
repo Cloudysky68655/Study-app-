@@ -11,8 +11,7 @@
 // and the CSS defaults always win.
 export function applyAccentVars() {}
 
-// getAccent/ACCENTS are no longer used anywhere (the picker UI that
-// consumed them was removed from SidebarSettings.js), but are kept as
-// harmless no-op exports in case anything else still imports them.
+// getAccent/ACCENTS are no longer used anywhere, but are kept as
+// harmless no-op exports in case anything still imports them.
 export const ACCENTS = [];
 export function getAccent() { return null; }
